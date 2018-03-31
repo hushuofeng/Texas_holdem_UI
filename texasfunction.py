@@ -192,25 +192,7 @@ class cards():
             yield self.cardlist[(2*self.usr_nums+5)]
             yield self.cardlist[(2*self.usr_nums+7)]
 
-class card_predict(cards):
-    #继承cards类，用于在texas_predict中生成手牌类
-    def remove_cards(self,cardlist):
-        #用于去掉已经存在的牌
-#        self.cardlist = [x for x in range(1,53) if x not in cardlist]
-        self.cardlist = [x for x in self.cardlist if x not in cardlist]
-    def deal(self,card_num):
-        #重写deal函数，根据此时底牌数量，返回应发的底牌
-        if card_num == 0:
-            return self.cardlist[(2*self.usr_nums+1):(2*self.usr_nums+4):] +\
-                [self.cardlist[(2*self.usr_nums+5)]]+\
-                [self.cardlist[(2*self.usr_nums+7)]]
-        elif card_num == 3:
-            return [self.cardlist[(2*self.usr_nums+1)]]
-        elif card_num == 4:
-            return [self.cardlist[(2*self.usr_nums+1)]]+\
-                [self.cardlist[(2*self.usr_nums+3)]]
-        elif card_num == 5:
-            return []
+
 
 class chips():
     def __init__(self):
@@ -220,28 +202,7 @@ class chips():
         self.chip_num = [0] * player_num
         self.all_in = [0] * player_num
     
-def card_trans(card_num,card_color=[], card_type = 10):
-    #将卡牌列表转化为poke牌
-    #如果只输入card_num，则表示输入为原始牌号，1-52
-    #如果同时输入三个变量，则表示输入为最终手牌
-    
-    color = ["红桃","方片","黑桃","草花"]
-    num = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]
-    card_poker = []
-    if not card_color:  #如果没有花色列表，需要对card_num转化
-        card_color = [((x-1) // 13 ) for x in card_num]
-        card_num = [((x-1) % 13 + 1) for x in card_num]
-        tmp = np.argsort(card_num)
-        card_num = [card_num[x] for x in tmp]
-        card_color = [card_color[x] for x in tmp]
-    for i in range(len(card_num)):  #将花色与牌号结合输出
-        card_poker.append(color[card_color[i]]+num[card_num[i]-1])
-    if (card_type == 5) or (card_type == 9):
-        #如果为同花顺或顺子，需判断是否要将A置于第一位
-        if card_num[0] == 1:
-            card_poker.insert(0,card_poker[-1])
-            del card_poker[-1]
-    return card_poker
+
 
 def card_compare(cardtype1,cardtype2):
     # 比较两组牌型的大小
@@ -291,20 +252,7 @@ def player_rank(players):
             rank[index[0]] = n
     return rank
 
-def print_cards(player_list,cards):
-    # 打印底牌与手牌
-    card_types = ["高牌","单对","双对","三条","顺子","同花","葫芦","金刚","同花顺"]
-    print("此时底牌是:",card_trans(cards))
-    print("玩家手牌分别是：")
-    for i in range(len(player_list)):
-    
-        print("玩家" + player_list[i].name + "：", end=' ')
-        print(card_types[player_list[i].handcard_type[0]-1], end=' ')
-        print(card_trans(player_list[i].handcard_type[2],\
-                         player_list[i].handcard_type[1],\
-                         player_list[i].handcard_type[0]), end=' ')
-        print("\t底牌：", end=' ')
-        print(card_trans(player_list[i].handcard))
+
 
 def check_raise(player_list, chips, usr_order, first_round = 0):
     player_num = len(player_list)
@@ -451,6 +399,8 @@ def chip_balance(player_list,chips):
                 sumchips -= sumchips_div
                 print("玩家%s获胜！ 赢得%d筹码！" % \
                       (player_list[k_min].name,sumchips_div))
+                
+
 def print_chips(player_list):
     player_num = len(player_list)
     symbol_num = player_num * 15
@@ -461,6 +411,64 @@ def print_chips(player_list):
     for j in range(player_num):
         print("%15s" % player_list[j].handchip, end = '')
     print('\n%s' % ('=' * symbol_num))
+
+def print_cards(player_list,cards):
+    # 打印底牌与手牌
+    card_types = ["高牌","单对","双对","三条","顺子","同花","葫芦","金刚","同花顺"]
+    print("此时底牌是:",card_trans(cards))
+    print("玩家手牌分别是：")
+    for i in range(len(player_list)):
+    
+        print("玩家" + player_list[i].name + "：", end=' ')
+        print(card_types[player_list[i].handcard_type[0]-1], end=' ')
+        print(card_trans(player_list[i].handcard_type[2],\
+                         player_list[i].handcard_type[1],\
+                         player_list[i].handcard_type[0]), end=' ')
+        print("\t底牌：", end=' ')
+        print(card_trans(player_list[i].handcard))
+    
+class card_predict(cards):
+    #继承cards类，用于在texas_predict中生成手牌类
+    def remove_cards(self,cardlist):
+        #用于去掉已经存在的牌
+#        self.cardlist = [x for x in range(1,53) if x not in cardlist]
+        self.cardlist = [x for x in self.cardlist if x not in cardlist]
+    def deal(self,card_num):
+        #重写deal函数，根据此时底牌数量，返回应发的底牌
+        if card_num == 0:
+            return self.cardlist[(2*self.usr_nums+1):(2*self.usr_nums+4):] +\
+                [self.cardlist[(2*self.usr_nums+5)]]+\
+                [self.cardlist[(2*self.usr_nums+7)]]
+        elif card_num == 3:
+            return [self.cardlist[(2*self.usr_nums+1)]]
+        elif card_num == 4:
+            return [self.cardlist[(2*self.usr_nums+1)]]+\
+                [self.cardlist[(2*self.usr_nums+3)]]
+        elif card_num == 5:
+            return []
+
+def card_trans(card_num,card_color=[], card_type = 10):
+    #将卡牌列表转化为poke牌
+    #如果只输入card_num，则表示输入为原始牌号，1-52
+    #如果同时输入三个变量，则表示输入为最终手牌
+    
+    color = ["红桃","方片","黑桃","草花"]
+    num = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]
+    card_poker = []
+    if not card_color:  #如果没有花色列表，需要对card_num转化
+        card_color = [((x-1) // 13 ) for x in card_num]
+        card_num = [((x-1) % 13 + 1) for x in card_num]
+        tmp = np.argsort(card_num)
+        card_num = [card_num[x] for x in tmp]
+        card_color = [card_color[x] for x in tmp]
+    for i in range(len(card_num)):  #将花色与牌号结合输出
+        card_poker.append(color[card_color[i]]+num[card_num[i]-1])
+    if (card_type == 5) or (card_type == 9):
+        #如果为同花顺或顺子，需判断是否要将A置于第一位
+        if card_num[0] == 1:
+            card_poker.insert(0,card_poker[-1])
+            del card_poker[-1]
+    return card_poker
        
         
 

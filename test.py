@@ -25,17 +25,18 @@ Created on Fri Feb  2 19:46:03 2018
 #if ss.isdigit():
 #    print('%s%s' % (ss,ss))
     
-import sys
-from PyQt5 import QtWidgets
-from desk import *
+import socket
+from errno import *
+socket.setdefaulttimeout(0.01)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#try:
+#    sock.connect(("192.168.1.211", 5005))
+#except socket.timeout as e:
+#    print("timeout")
+#    pass
 
-if __name__ == '__main__':
-    '''
-    主函数
-    '''
-    app = QtWidgets.QApplication(sys.argv)
-    mainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(mainWindow)
-    mainWindow.show()
-    sys.exit(app.exec_()) 
+
+err = sock.connect_ex(("192.168.1.211", 5005))
+print(err)
+if err == EWOULDBLOCK:
+    print('1')

@@ -379,13 +379,48 @@
     <property name="title">
      <string>菜单</string>
     </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionConnect"/>
+    <addaction name="actionsExit"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNew">
+   <property name="text">
+    <string>新建游戏</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>连接游戏</string>
+   </property>
+  </action>
+  <action name="actionsExit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="desk.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionsExit</sender>
+   <signal>triggered()</signal>
+   <receiver>desk</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>527</x>
+     <y>353</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

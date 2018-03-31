@@ -6,6 +6,7 @@ Created on Fri Mar 23 11:01:40 2018
 """
 
 from asyncore import dispatcher
+from errno import *
 import sys
 import socket, asyncore
 
@@ -14,7 +15,26 @@ class  ChatClient(dispatcher):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((host, port))
-        self.messages = []
+    
+    def connect(self, address):
+        self.connected = False
+        self.connecting = True
+        print('timeouterror')
+        self.socket.settimeout(1)
+        err = self.socket.connect_ex(address)
+        self.socket.settimeout(None)
+        if err == 10035:
+            raise OSError(err)
+        
+        if err in (EINPROGRESS, EALREADY, EWOULDBLOCK) \
+        or err == EINVAL and os.name == 'nt':
+            self.addr = address
+            return
+        if err in (0, EISCONN):
+            self.addr = address
+            self.handle_connect_event()
+        else:
+            raise OSError(err, errorcode[err])
         
     def handle_connect(self):
         pass
@@ -43,7 +63,5 @@ if __name__ == '__main__':
     host = sys.argv[1]
     port = int(sys.argv[2])
     s = ChatClient(host, port)
-#    s = ChatClient('localhost', 5005)
-    asyncore.loop()
-#    try: asyncore.loop()
-#    except KeyboardInterrupt: print()
+    try: asyncore.loop()
+    except KeyboardInterrupt: print()

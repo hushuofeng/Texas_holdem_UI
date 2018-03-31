@@ -147,9 +147,19 @@ class Ui_desk(object):
         self.statusbar = QtWidgets.QStatusBar(desk)
         self.statusbar.setObjectName("statusbar")
         desk.setStatusBar(self.statusbar)
+        self.actionNew = QtWidgets.QAction(desk)
+        self.actionNew.setObjectName("actionNew")
+        self.actionConnect = QtWidgets.QAction(desk)
+        self.actionConnect.setObjectName("actionConnect")
+        self.actionsExit = QtWidgets.QAction(desk)
+        self.actionsExit.setObjectName("actionsExit")
+        self.menu.addAction(self.actionNew)
+        self.menu.addAction(self.actionConnect)
+        self.menu.addAction(self.actionsExit)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(desk)
+        self.actionsExit.triggered.connect(desk.close)
         QtCore.QMetaObject.connectSlotsByName(desk)
 
     def retranslateUi(self, desk):
@@ -163,4 +173,7 @@ class Ui_desk(object):
         self.Double.setText(_translate("desk", "Double"))
         self.pushButton.setText(_translate("desk", "PushButton"))
         self.menu.setTitle(_translate("desk", "菜单"))
+        self.actionNew.setText(_translate("desk", "新建游戏"))
+        self.actionConnect.setText(_translate("desk", "连接游戏"))
+        self.actionsExit.setText(_translate("desk", "退出"))
 
